@@ -365,6 +365,4 @@ The API uses URL versioning. Current version: v1
 ## Support
 
 For API support, contact:
-- Email: api-support@ecommerce.com
-- Documentation: https://docs.ecommerce.com
-- Status Page: https://status.ecommerce.com
+- Email: rohitnegi50@gmail.com

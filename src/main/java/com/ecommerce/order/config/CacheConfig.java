@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -107,7 +108,7 @@ public class CacheConfig implements CachingConfigurer {
 
     @Override
     public CacheResolver cacheResolver() {
-        return new SimpleCacheResolver(cacheManager());
+        return new SimpleCacheResolver(Objects.requireNonNull(cacheManager()));
     }
 
     @Override

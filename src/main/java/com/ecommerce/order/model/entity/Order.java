@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -133,11 +131,11 @@ public class Order {
     }
 
     public boolean canBeCancelled() {
-        return status == OrderStatus.PENDING || status == OrderStatus.PROCESSING;
+        return status != OrderStatus.PENDING && status != OrderStatus.PROCESSING;
     }
 
     public void cancel(String reason, String cancelledBy) {
-        if (!canBeCancelled()) {
+        if (canBeCancelled()) {
             throw new IllegalStateException(
                 String.format("Order in %s status cannot be cancelled", status)
             );

@@ -19,7 +19,7 @@
 
 ### 1. Clone Repository
 ```bash
-git clone https://github.com/yourusername/ecommerce-order-system.git
+git clone https://github.com/Ro4itOfficial/ecommerce-order-system.git
 cd ecommerce-order-system
 ```
 
@@ -564,7 +564,6 @@ spec:
 
 ## Support
 
-- **Documentation**: https://docs.ecommerce.com
-- **Issues**: https://github.com/yourusername/ecommerce-order-system/issues
+- **Issues**: https://github.com/Ro4itOfficial/ecommerce-order-system/issues
 - **Slack**: #order-service-support
-- **Email**: devops@ecommerce.com
+- **Email**: rohitnegi50@gmail.com

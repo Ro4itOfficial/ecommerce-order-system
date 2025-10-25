@@ -20,8 +20,7 @@ public class UpdateOrderStatusRequest {
             message = "Status must be one of: PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED")
     @Schema(description = "New order status", 
            example = "PROCESSING", 
-           allowableValues = {"PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"},
-           required = true)
+           allowableValues = {"PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"})
     private String status;
 
     @Schema(description = "Tracking number (required when status is SHIPPED)", example = "TRK123456789")

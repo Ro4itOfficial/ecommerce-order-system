@@ -328,7 +328,4 @@ Return Response
 
 ## Contact & Support
 
-- **Team Lead**: tech-lead@ecommerce.com
-- **DevOps**: devops@ecommerce.com
-- **On-Call**: oncall@ecommerce.com
-- **Documentation**: https://docs.ecommerce.com
+- **Owner**: rohitnegi50@gmail.com

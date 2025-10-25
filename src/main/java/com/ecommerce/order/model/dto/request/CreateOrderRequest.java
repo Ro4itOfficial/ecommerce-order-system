@@ -20,7 +20,7 @@ public class CreateOrderRequest {
 
     @NotBlank(message = "Customer ID is required")
     @Size(max = 50, message = "Customer ID must not exceed 50 characters")
-    @Schema(description = "Unique identifier of the customer", example = "CUST123", required = true)
+    @Schema(description = "Unique identifier of the customer", example = "CUST123")
     private String customerId;
 
     @Email(message = "Invalid email format")
@@ -33,7 +33,7 @@ public class CreateOrderRequest {
 
     @NotEmpty(message = "Order must contain at least one item")
     @Valid
-    @Schema(description = "List of items in the order", required = true)
+    @Schema(description = "List of items in the order")
     private List<OrderItemRequest> items;
 
     @Schema(description = "Shipping address for the order", example = "123 Main St, City, State 12345")
@@ -64,12 +64,12 @@ public class CreateOrderRequest {
         
         @NotBlank(message = "Product ID is required")
         @Size(max = 50, message = "Product ID must not exceed 50 characters")
-        @Schema(description = "Unique identifier of the product", example = "PROD001", required = true)
+        @Schema(description = "Unique identifier of the product", example = "PROD001")
         private String productId;
 
         @NotBlank(message = "Product name is required")
         @Size(max = 200, message = "Product name must not exceed 200 characters")
-        @Schema(description = "Name of the product", example = "Laptop", required = true)
+        @Schema(description = "Name of the product", example = "Laptop")
         private String productName;
 
         @Schema(description = "Product description", example = "High-performance laptop with 16GB RAM")
@@ -82,13 +82,13 @@ public class CreateOrderRequest {
         @NotNull(message = "Quantity is required")
         @Positive(message = "Quantity must be positive")
         @Max(value = 9999, message = "Quantity cannot exceed 9999")
-        @Schema(description = "Quantity of the product", example = "2", required = true)
+        @Schema(description = "Quantity of the product", example = "2")
         private Integer quantity;
 
         @NotNull(message = "Unit price is required")
         @DecimalMin(value = "0.01", message = "Unit price must be at least 0.01")
         @DecimalMax(value = "999999.99", message = "Unit price cannot exceed 999999.99")
-        @Schema(description = "Price per unit of the product", example = "999.99", required = true)
+        @Schema(description = "Price per unit of the product", example = "999.99")
         private BigDecimal unitPrice;
 
         @DecimalMin(value = "0.00", message = "Discount amount cannot be negative")
