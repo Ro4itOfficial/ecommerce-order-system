@@ -1,0 +1,130 @@
+graph TB
+    subgraph "Client Layer"
+        WEB[Web Client]
+        MOBILE[Mobile App]
+        API_CLIENT[API Client]
+    end
+
+    subgraph "API Gateway / Load Balancer"
+        LB[Nginx/Load Balancer]
+    end
+
+    subgraph "Spring Boot Application"
+        subgraph "Security Layer"
+            JWT[JWT Authentication Filter]
+            AUTH[Authorization Manager]
+        end
+
+        subgraph "Controller Layer"
+            ORDER_CTRL[Order Controller]
+            AUTH_CTRL[Auth Controller]
+            USER_CTRL[User Controller]
+        end
+
+        subgraph "Service Layer"
+            ORDER_SVC[Order Service]
+            USER_SVC[User Service]
+            AUTH_SVC[Authentication Service]
+            CACHE_SVC[Cache Service]
+        end
+
+        subgraph "Repository Layer"
+            ORDER_REPO[Order Repository]
+            USER_REPO[User Repository]
+            ITEM_REPO[OrderItem Repository]
+        end
+
+        subgraph "Background Jobs"
+            SCHEDULER[Order Status Scheduler]
+        end
+
+        subgraph "Configuration"
+            REDIS_CONFIG[Redis Config]
+            DB_CONFIG[Database Config]
+            SEC_CONFIG[Security Config]
+        end
+    end
+
+    subgraph "Data Layer"
+        POSTGRES[(PostgreSQL Database)]
+        REDIS[(Redis Cache)]
+    end
+
+    subgraph "Monitoring & Observability"
+        ACTUATOR[Spring Actuator]
+        METRICS[Metrics]
+        HEALTH[Health Checks]
+    end
+
+    subgraph "External Services"
+        ZIPKIN[Zipkin - Distributed Tracing]
+        SWAGGER[Swagger/OpenAPI]
+    end
+
+%% Client to Gateway
+    WEB --> LB
+    MOBILE --> LB
+    API_CLIENT --> LB
+
+%% Gateway to Security
+    LB --> JWT
+
+%% Security to Controllers
+    JWT --> AUTH
+    AUTH --> ORDER_CTRL
+    AUTH --> AUTH_CTRL
+    AUTH --> USER_CTRL
+
+%% Controllers to Services
+    ORDER_CTRL --> ORDER_SVC
+    AUTH_CTRL --> AUTH_SVC
+    USER_CTRL --> USER_SVC
+
+%% Services to Repositories
+    ORDER_SVC --> ORDER_REPO
+    ORDER_SVC --> CACHE_SVC
+    USER_SVC --> USER_REPO
+    AUTH_SVC --> USER_REPO
+
+%% Repositories to Database
+    ORDER_REPO --> POSTGRES
+    USER_REPO --> POSTGRES
+    ITEM_REPO --> POSTGRES
+
+%% Cache Service to Redis
+    CACHE_SVC --> REDIS
+
+%% Scheduler to Services
+    SCHEDULER --> ORDER_SVC
+
+%% Configuration connections
+    REDIS_CONFIG -.-> REDIS
+    DB_CONFIG -.-> POSTGRES
+    SEC_CONFIG -.-> JWT
+
+%% Monitoring
+    ACTUATOR --> HEALTH
+    ACTUATOR --> METRICS
+
+%% External Services
+    ORDER_SVC -.-> ZIPKIN
+    ORDER_CTRL -.-> SWAGGER
+
+%% Styling
+    classDef client fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef security fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef controller fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef service fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef repository fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef data fill:#ffebee,stroke:#b71c1c,stroke-width:2px
+    classDef background fill:#e0f2f1,stroke:#004d40,stroke-width:2px
+    classDef monitoring fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+
+    class WEB,MOBILE,API_CLIENT client
+    class JWT,AUTH security
+    class ORDER_CTRL,AUTH_CTRL,USER_CTRL controller
+    class ORDER_SVC,USER_SVC,AUTH_SVC,CACHE_SVC service
+    class ORDER_REPO,USER_REPO,ITEM_REPO repository
+    class POSTGRES,REDIS data
+    class SCHEDULER background
+    class ACTUATOR,METRICS,HEALTH monitoring

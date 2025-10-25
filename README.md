@@ -146,6 +146,15 @@ The system follows a microservices architecture with the following components:
 - **Database**: PostgreSQL with connection pooling
 - **Monitoring**: Prometheus metrics and Grafana dashboards
 
+### System Architecture
+![Architecture Diagram](docs/architecture-diagram.mermaid)
+
+### Component Relationships
+![Component Diagram](docs/component-relationship.mermaid)
+
+### Request Flow
+![Request Flow](docs/request-flow.mermaid)
+
 See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture documentation.
 
 ## 🧪 Testing

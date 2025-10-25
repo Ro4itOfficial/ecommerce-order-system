@@ -1,0 +1,130 @@
+graph LR
+    subgraph "Presentation Layer"
+        REST[REST API Endpoints]
+        SWAGGER[Swagger UI]
+    end
+
+    subgraph "Security Components"
+        JWT_FILTER[JwtAuthenticationFilter]
+        JWT_UTIL[JwtTokenUtil]
+        USER_DETAILS[CustomUserDetailsService]
+        SEC_CONFIG[SecurityConfig]
+    end
+
+    subgraph "Controller Components"
+        ORDER_CTRL[OrderController]
+        AUTH_CTRL[AuthController]
+        USER_CTRL[UserController]
+    end
+
+    subgraph "Service Components"
+        ORDER_SVC[OrderService]
+        ORDER_SVC_IMPL[OrderServiceImpl]
+        USER_SVC[UserService]
+        AUTH_SVC[AuthenticationService]
+    end
+
+    subgraph "Repository Components"
+        ORDER_REPO[OrderRepository<br/>JpaRepository]
+        USER_REPO[UserRepository<br/>JpaRepository]
+    end
+
+    subgraph "Model Components"
+        ORDER_ENTITY[Order Entity]
+        ITEM_ENTITY[OrderItem Entity]
+        USER_ENTITY[User Entity]
+        ORDER_DTO[Order DTOs]
+        USER_DTO[User DTOs]
+    end
+
+    subgraph "Background Jobs"
+        SCHEDULER[OrderStatusScheduler]
+    end
+
+    subgraph "Configuration Components"
+        REDIS_CONFIG[RedisConfig]
+        DB_CONFIG[DatabaseConfig]
+        CACHE_CONFIG[CacheConfig]
+        FLYWAY[Flyway Migrations]
+    end
+
+    subgraph "External Dependencies"
+        POSTGRES[(PostgreSQL)]
+        REDIS[(Redis)]
+    end
+
+%% REST API to Controllers
+    REST --> ORDER_CTRL
+    REST --> AUTH_CTRL
+    REST --> USER_CTRL
+
+%% Security Flow
+    REST --> JWT_FILTER
+    JWT_FILTER --> JWT_UTIL
+    JWT_FILTER --> USER_DETAILS
+    USER_DETAILS --> USER_REPO
+    SEC_CONFIG --> JWT_FILTER
+    SEC_CONFIG --> USER_DETAILS
+
+%% Controller to Service
+    ORDER_CTRL --> ORDER_SVC
+    AUTH_CTRL --> AUTH_SVC
+    USER_CTRL --> USER_SVC
+
+%% Service Implementation
+    ORDER_SVC --> ORDER_SVC_IMPL
+
+%% Service to Repository
+    ORDER_SVC_IMPL --> ORDER_REPO
+    USER_SVC --> USER_REPO
+    AUTH_SVC --> USER_REPO
+
+%% Repository to Entity
+    ORDER_REPO --> ORDER_ENTITY
+    ORDER_REPO --> ITEM_ENTITY
+    USER_REPO --> USER_ENTITY
+
+%% DTOs relationship
+    ORDER_CTRL --> ORDER_DTO
+    ORDER_SVC_IMPL --> ORDER_DTO
+    USER_CTRL --> USER_DTO
+
+%% Entity relationships
+    ORDER_ENTITY --> ITEM_ENTITY
+
+%% Scheduler
+    SCHEDULER --> ORDER_SVC_IMPL
+
+%% Configuration to External
+    REDIS_CONFIG --> REDIS
+    DB_CONFIG --> POSTGRES
+    CACHE_CONFIG --> REDIS
+    FLYWAY --> POSTGRES
+
+%% Repository to Database
+    ORDER_REPO -.-> POSTGRES
+    USER_REPO -.-> POSTGRES
+
+%% Swagger
+    SWAGGER -.-> REST
+
+%% Styling
+    classDef presentation fill:#e3f2fd,stroke:#1565c0,stroke-width:2px
+    classDef security fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef controller fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+    classDef service fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    classDef repository fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    classDef model fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    classDef config fill:#e0f2f1,stroke:#00695c,stroke-width:2px
+    classDef external fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef scheduler fill:#f1f8e9,stroke:#558b2f,stroke-width:2px
+
+    class REST,SWAGGER presentation
+    class JWT_FILTER,JWT_UTIL,USER_DETAILS,SEC_CONFIG security
+    class ORDER_CTRL,AUTH_CTRL,USER_CTRL controller
+    class ORDER_SVC,ORDER_SVC_IMPL,USER_SVC,AUTH_SVC service
+    class ORDER_REPO,USER_REPO repository
+    class ORDER_ENTITY,ITEM_ENTITY,USER_ENTITY,ORDER_DTO,USER_DTO model
+    class REDIS_CONFIG,DB_CONFIG,CACHE_CONFIG,FLYWAY config
+    class POSTGRES,REDIS external
+    class SCHEDULER scheduler

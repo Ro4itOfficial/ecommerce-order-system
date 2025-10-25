@@ -1,0 +1,59 @@
+flowchart TD
+    START([Client Request])
+
+    AUTH{Authenticated?}
+    CACHE{Cache<br/>Available?}
+    VALIDATE{Valid<br/>Request?}
+
+    JWT_CHECK[Validate JWT Token]
+    AUTHORIZE[Check User Permissions]
+
+    GET_CACHE[Retrieve from Redis]
+    QUERY_DB[Query PostgreSQL]
+    PROCESS[Process Business Logic]
+
+    UPDATE_CACHE[Update Cache]
+    SAVE_DB[Save to Database]
+
+    RESPONSE[Return Response]
+    ERROR_401[401 Unauthorized]
+    ERROR_403[403 Forbidden]
+    ERROR_400[400 Bad Request]
+
+    START --> JWT_CHECK
+    JWT_CHECK --> AUTH
+
+    AUTH -->|Invalid Token| ERROR_401
+    AUTH -->|Valid| AUTHORIZE
+
+    AUTHORIZE -->|No Permission| ERROR_403
+    AUTHORIZE -->|Has Permission| VALIDATE
+
+    VALIDATE -->|Invalid| ERROR_400
+    VALIDATE -->|Valid| CACHE
+
+    CACHE -->|Hit| GET_CACHE
+    GET_CACHE --> RESPONSE
+
+    CACHE -->|Miss| QUERY_DB
+    QUERY_DB --> PROCESS
+    PROCESS --> UPDATE_CACHE
+    UPDATE_CACHE --> SAVE_DB
+    SAVE_DB --> RESPONSE
+
+    RESPONSE --> END([Return to Client])
+    ERROR_401 --> END
+    ERROR_403 --> END
+    ERROR_400 --> END
+
+    classDef process fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef decision fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    classDef error fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef success fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    classDef cache fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+
+    class JWT_CHECK,AUTHORIZE,PROCESS,QUERY_DB,SAVE_DB process
+    class AUTH,CACHE,VALIDATE decision
+    class ERROR_401,ERROR_403,ERROR_400 error
+    class GET_CACHE,UPDATE_CACHE cache
+    class RESPONSE success

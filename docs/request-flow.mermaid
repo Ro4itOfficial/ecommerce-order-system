@@ -1,0 +1,45 @@
+sequenceDiagram
+    actor Client
+    participant Gateway as API Gateway
+    participant JWT as JWT Filter
+    participant Auth as Auth Manager
+    participant Controller as Order Controller
+    participant Service as Order Service
+    participant Cache as Redis Cache
+    participant Repository as Order Repository
+    participant DB as PostgreSQL
+
+    Client->>Gateway: HTTP Request (with JWT)
+    Gateway->>JWT: Forward Request
+
+    alt Valid JWT Token
+        JWT->>Auth: Validate Token
+        Auth->>JWT: Token Valid
+        JWT->>Controller: Pass Request
+
+        Controller->>Service: Call Business Logic
+
+        alt Cache Hit
+            Service->>Cache: Check Cache
+            Cache-->>Service: Return Cached Data
+            Service-->>Controller: Return Response
+        else Cache Miss
+            Service->>Cache: Check Cache
+            Cache-->>Service: Cache Miss
+            Service->>Repository: Query Database
+            Repository->>DB: Execute Query
+            DB-->>Repository: Return Data
+            Repository-->>Service: Return Entity
+            Service->>Cache: Store in Cache
+            Service-->>Controller: Return Response
+        end
+
+        Controller-->>Gateway: HTTP Response
+        Gateway-->>Client: Return Data
+
+    else Invalid Token
+        JWT->>Auth: Validate Token
+        Auth-->>JWT: Token Invalid
+        JWT-->>Gateway: 401 Unauthorized
+        Gateway-->>Client: Error Response
+    end

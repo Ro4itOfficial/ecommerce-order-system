@@ -1,0 +1,59 @@
+graph TB
+    subgraph "Docker Network: order-network"
+        subgraph "Application Container"
+            APP[Order Service<br/>Spring Boot App<br/>Port: 8080]
+        end
+
+        subgraph "Database Container"
+            PG[PostgreSQL 15<br/>Port: 5432<br/>Volume: postgres_data]
+        end
+
+        subgraph "Cache Container"
+            RD[Redis 7<br/>Port: 6379<br/>Volume: redis_data]
+        end
+
+        subgraph "Monitoring Container"
+            ZIP[Zipkin<br/>Port: 9411<br/>Optional]
+        end
+    end
+
+    subgraph "Host Machine"
+        DC[Docker Compose]
+        VOL1[Volume: postgres_data]
+        VOL2[Volume: redis_data]
+    end
+
+    subgraph "External Access"
+        HTTP[HTTP Clients<br/>localhost:8080]
+        PSQL[PostgreSQL Clients<br/>localhost:5432]
+        REDIS_CLI[Redis CLI<br/>localhost:6379]
+    end
+
+    DC --> APP
+    DC --> PG
+    DC --> RD
+    DC --> ZIP
+
+    APP --> PG
+    APP --> RD
+    APP -.-> ZIP
+
+    PG --> VOL1
+    RD --> VOL2
+
+    HTTP --> APP
+    PSQL --> PG
+    REDIS_CLI --> RD
+
+    classDef container fill:#e3f2fd,stroke:#1976d2,stroke-width:2px
+    classDef database fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef cache fill:#fff3e0,stroke:#ef6c00,stroke-width:2px
+    classDef external fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef volume fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+
+    class APP container
+    class PG database
+    class RD cache
+    class ZIP container
+    class HTTP,PSQL,REDIS_CLI external
+    class VOL1,VOL2 volume
